@@ -1,0 +1,11 @@
+node_modules/
+/dist/
+.env
+*.log
+.DS_Store
+# 爬虫产物默认忽略，但放行展示页需要的两项
+/data/*
+!/data/movies.json
+# 本地工具状态与测试截图，不入库
+/.zcode/
+/gui-test-screenshots/

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>观影手记 · The Viewing Journal</title>
+<meta name="description" content="一份私人的电影观看记录，以杂志编辑风呈现。数据来源：豆瓣电影。" />
+<!-- Open Graph / 社交分享卡片 -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="观影手记 · The Viewing Journal" />
+<meta property="og:description" content="一份私人的电影观看记录，以杂志编辑风呈现。" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+<script type="application/ld+json" id="ld-json"></script>
+<!-- BUILD:STYLE -->
+</head>
+<body>
+<a class="skip-link" href="#sec-collection">跳到片单正文</a>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <span class="topbar-brand">观影手记</span>
+      <button class="nav-toggle" id="navToggle" aria-label="展开目录" aria-expanded="false">☰</button>
+    </div>
+    <nav id="topNav" aria-label="页面目录">
+      <ul class="toc" id="toc"></ul>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">阅览室</button>
+  </div>
+</header>
+
+<!-- 刊头 -->
+<section class="masthead">
+  <div class="container">
+    <p class="kicker">A Personal Cinema Ledger</p>
+    <h1 class="masthead-title" id="toTop" role="button" tabindex="0" aria-label="回到顶部">观影<span class="accent">手记</span></h1>
+    <p class="masthead-sub">The Viewing Journal — 一份与电影共度的私人编年</p>
+    <div class="masthead-meta" id="mastheadMeta"></div>
+    <div class="masthead-ornament"></div>
+  </div>
+</section>
+
+<!-- 卷首语 -->
+<section class="editor-note" id="sec-note">
+  <div class="container">
+    <p class="kicker">Editor's Note · 卷首语</p>
+    <p class="lead" id="editorNoteBody"></p>
+    <div class="editor-note-grid">
+      <p><span class="label">观影跨度 Span</span><span id="noteSpan"></span></p>
+      <p><span class="label">观影最盛之月 Peak Month</span><span id="notePeak"></span></p>
+      <p><span class="label">最常涉足之类型 Genre</span><span id="noteGenre"></span></p>
+      <p><span class="label">最常到访之国度 Country</span><span id="noteCountry"></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 数据仪表 -->
+<section id="sec-numbers">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">By the Numbers</p>
+      <h2>数说观影</h2>
+      <p class="desc">把十四载银幕时光，折叠成五个数字。</p>
+    </div>
+    <div class="numbers-grid" id="numbersGrid"></div>
+  </div>
+</section>
+
+<!-- 观影日历 -->
+<section id="sec-calendar">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">The Calendar</p>
+      <h2>观影日历</h2>
+      <p class="desc">每一个色块的深浅，都是那个日子被电影填满的程度。</p>
+    </div>
+    <div class="chart-wrap reveal"><svg id="calendarChart" role="img" aria-label="观影日历热力图"></svg></div>
+    <p class="scroll-hint" aria-hidden="true">← 左右滑动查看更多年份 →</p>
+    <div class="calendar-legend">
+      <span>少</span>
+      <span class="swatches" id="calendarLegend"></span>
+      <span>多</span>
+    </div>
+  </div>
+</section>
+
+<!-- 品味坐标 -->
+<section id="sec-scatter">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Taste Coordinates</p>
+      <h2>品味坐标</h2>
+      <p class="desc">横轴为豆瓣评分，纵轴为私人评分——分歧之处，方见性情。</p>
+    </div>
+    <div class="chart-wrap reveal"><svg id="scatterChart"></svg></div>
+    <div class="scatter-legend" id="scatterLegend" hidden>
+      <span class="lg"><span class="mk acc">●</span> 一致</span>
+      <span class="lg"><span class="mk gold">◆</span> 独爱宝藏</span>
+      <span class="lg"><span class="mk dia">◇</span> 大众力捧，我独无感</span>
+    </div>
+    <div class="scatter-note">
+      <div class="col">
+        <h4><span class="kicker">Hidden Gems</span>独爱宝藏</h4>
+        <p class="muted" style="font-size:.85rem;margin:0 0 .8rem">大众平淡，我却奉若至宝。</p>
+        <ul class="film-list" id="treasureList"></ul>
+      </div>
+      <div class="col">
+        <h4><span class="kicker">Not For Me</span>大众力捧，我独无感</h4>
+        <p class="muted" style="font-size:.85rem;margin:0 0 .8rem">盛名之下，我独缺席。</p>
+        <ul class="film-list" id="overhypedList"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 片单主体 -->
+<section id="sec-collection">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">The Collection</p>
+      <h2>片单</h2>
+      <p class="desc">点击海报，展开一封写给这部电影的私信。</p>
+    </div>
+    <div class="collection-controls" id="controls">
+      <div class="control">
+        <label for="f-year">年代</label>
+        <div class="chip" id="f-year"></div>
+      </div>
+      <div class="control">
+        <label for="f-rating">私人评分</label>
+        <div class="chip" id="f-rating"></div>
+      </div>
+      <div class="control">
+        <label for="f-genre">类型</label>
+        <div class="chip" id="f-genre"></div>
+      </div>
+      <div class="control">
+        <label for="f-country">国家</label>
+        <div class="chip" id="f-country"></div>
+      </div>
+      <div class="control">
+        <label for="f-sort">排序</label>
+        <div class="chip" id="f-sort"></div>
+      </div>
+      <div class="control">
+        <input type="search" id="f-search" placeholder="搜索片名 / 导演…" aria-label="搜索片单" autocomplete="off" />
+        <ul class="suggest" id="f-suggest" role="listbox" hidden></ul>
+      </div>
+      <div class="control control-actions">
+        <button class="ctrl-btn" id="f-random" type="button">随机一部</button>
+        <button class="ctrl-btn" id="f-reset" type="button">重置筛选</button>
+      </div>
+      <span class="collection-count" id="collCount"></span>
+    </div>
+    <div class="collection-volumes" id="posterGrid"></div>
+  </div>
+</section>
+
+<!-- 类型光谱 -->
+<section id="sec-genre">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Genre Spectrum</p>
+      <h2>类型光谱</h2>
+      <p class="desc">三十种类型，照见口味的色谱。</p>
+    </div>
+    <div class="bar-list reveal" id="genreBars"></div>
+  </div>
+</section>
+
+<!-- 地理版图 -->
+<section id="sec-atlas">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Atlas</p>
+      <h2>地理版图</h2>
+      <p class="desc">银幕到访的国度，也是我精神游历的疆域。</p>
+    </div>
+    <div class="bar-list reveal" id="countryBars"></div>
+  </div>
+</section>
+
+<!-- 年代河流 -->
+<section id="sec-decades">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Decades</p>
+      <h2>年代河流</h2>
+      <p class="desc">从 1930s 到 2020s，银幕流过的十个年代。</p>
+    </div>
+    <div class="chart-wrap reveal"><svg id="decadeChart" role="img" aria-label="年代分布面积图"></svg></div>
+  </div>
+</section>
+
+<!-- 评分趋势 -->
+<section id="sec-trend">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Rating Trend</p>
+      <h2>评分趋势</h2>
+      <p class="desc">私人评分随观影时间起伏——是越看越宽容，还是越看越挑剔？</p>
+    </div>
+    <div class="chart-wrap reveal"><svg id="trendChart" role="img" aria-label="评分随时间趋势折线图"></svg></div>
+  </div>
+</section>
+
+<!-- 常驻创作者 -->
+<section id="sec-company">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Repertory Company</p>
+      <h2>常驻创作者</h2>
+      <p class="desc">那些反复出现在我片单上的名字。</p>
+    </div>
+    <div class="two-col reveal">
+      <div>
+        <h4>导演 Directors</h4>
+        <ol class="rank-list" id="directorRank"></ol>
+      </div>
+      <div>
+        <h4>演员 Actors</h4>
+        <ol class="rank-list" id="actorRank"></ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 年度回顾 -->
+<section id="sec-year">
+  <div class="container">
+    <div class="section-head">
+      <p class="kicker">Year in Review</p>
+      <h2>年度回顾</h2>
+      <p class="desc">每一年，都是一座小宇宙。</p>
+    </div>
+    <div class="year-tabs" id="yearTabs"></div>
+    <div id="yearPanels"></div>
+  </div>
+</section>
+
+<!-- 版权页 -->
+<section class="colophon" id="sec-colophon">
+  <div class="container">
+    <div class="orn film-strip" aria-hidden="true"></div>
+    <p>观影手记 · The Viewing Journal</p>
+    <p>数据来源：豆瓣电影 · 由静态站点呈现。</p>
+    <p class="stamp" id="colophonStamp"></p>
+  </div>
+</section>
+
+<!-- 滚动进度条：贴底超细暗红线，如电影播放进度 -->
+<div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="scrollProgress"></div></div>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="电影详情">
+  <button class="lightbox-close" id="lightboxClose" aria-label="关闭">×</button>
+  <div class="lightbox-card" id="lightboxCard"></div>
+</div>
+
+<!-- 图表 tooltip -->
+<div class="chart-tip" id="chartTip"></div>
+
+<script src="./data.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

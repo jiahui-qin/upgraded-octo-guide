@@ -1,0 +1,60 @@
+name: 部署观影手记到 GitHub Pages
+
+# 任何提交到 main（含爬虫更新数据后）自动构建并部署展示页；也可手动触发。
+on:
+  push:
+    branches: [main]
+    # 只有这些路径变更才值得重新部署，避免无关改动空跑
+    paths:
+      - "data/movies.json"
+      - "posters/**"
+      - "site/**"
+      - "scripts/build-site.mjs"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+# 同一时刻只允许一个部署任务，新任务排队，进行中的不抢占
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write # deploy-pages 需要 OIDC 写权限
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # 构建脚本零依赖，无需 cache / npm ci
+
+      - name: 配置 Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: 构建展示页
+        run: node scripts/build-site.mjs
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

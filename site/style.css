@@ -1,0 +1,974 @@
+/* ============================================================
+   观影手记 · The Viewing Journal
+   杂志编辑风样式 —— 纸感底色、衬线标题、发丝线、大留白
+   ============================================================ */
+
+:root {
+  --paper: #faf8f4;
+  --paper-tint: #f3efe7;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-faint: #8a8a8a;
+  --rule: #d8d2c5;
+  --rule-fine: #e8e3d8;
+  --accent: #8b1e1e;          /* 影院暗红 */
+  --accent-soft: #b85a5a;
+  --gold: #b8924a;            /* 装饰金 */
+  --cal-empty: #ece5d8;       /* 日历空日：暖灰，"存在但安静"，与纸面拉开一档 */
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06);       /* 海报卡片物理感 */
+  --card-shadow-hover: 0 8px 20px rgba(0,0,0,0.14);
+  --badge-bg: #ffffff;        /* 评分角标实色背景，白海报上对比充足 */
+  --seam-shadow: inset 12px 0 20px -12px rgba(0,0,0,0.18); /* 灯箱海报→正文过渡渐变 */
+  --serif: "Noto Serif SC", "Playfair Display", "Songti SC", "Source Han Serif SC", Georgia, serif;
+  --sans: "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --maxw: 1180px;
+}
+
+/* 阅览室暗色模式 */
+body.dark {
+  --paper: #14131a;
+  --paper-tint: #1c1b24;
+  --ink: #ece8df;
+  --ink-soft: #b8b3a8;
+  --ink-faint: #7a766c;
+  --rule: #34323d;
+  --rule-fine: #26242d;
+  --accent: #d6432f;          /* 经典影院砖红（折中明度，暗底可读） */
+  --accent-soft: #a83220;     /* 同系更深，悬停态用 */
+  --gold: #d4b870;            /* 提亮金，暗底更显 */
+  --cal-empty: #2a2832;       /* 日历空日：暗底静默格子，不再刺眼黄斑 */
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  --card-shadow-hover: 0 10px 24px rgba(0,0,0,0.7);
+  --badge-bg: #0d0c12;        /* 暗底角标，与亮色对调 */
+  --seam-shadow: inset 12px 0 20px -12px rgba(0,0,0,0.55);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background .4s ease, color .4s ease;
+}
+
+::selection { background: var(--accent); color: var(--paper); }
+
+/* ---------- 排版基元 ---------- */
+.serif { font-family: var(--serif); }
+.muted { color: var(--ink-soft); }
+.faint { color: var(--ink-faint); }
+.accent { color: var(--accent); }
+
+/* 栏目标签：小型大写字母 */
+.kicker {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 0.6rem;
+}
+
+/* 发丝分隔线 */
+.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+.rule-fine { border: 0; border-top: 1px solid var(--rule-fine); margin: 0; }
+
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+section { padding: 5rem 0; border-top: 1px solid var(--rule-fine); }
+section:first-of-type { border-top: 1px solid var(--rule); }
+/* 节奏疏密：数据仪表紧凑有冲击，版权页前置重留白作"合上书"停顿 */
+#sec-numbers { padding: 3.5rem 0; }
+#sec-colophon { padding: 6rem 0 4rem; }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 700; line-height: 1.2; }
+
+/* ---------- 顶部导航 ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.topbar-brand {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+.toc {
+  display: flex;
+  gap: 1.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.toc::-webkit-scrollbar { display: none; }
+.toc a {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.toc a:hover, .toc a.active { color: var(--accent); border-color: var(--accent); }
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+/* skip-to-content 链接：键盘聚焦时显现 */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 300;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: top .15s;
+}
+.skip-link:focus { top: 0.6rem; }
+
+/* 移动端导航汉堡按钮：桌面隐藏 */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  font-size: 1.2rem;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0 0.3rem;
+  line-height: 1;
+}
+
+/* 日历滑动提示 */
+.scroll-hint {
+  display: none;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--ink-faint);
+  margin: 0.6rem 0 0;
+}
+
+/* 滚动进度条：贴底超细暗红线，如电影播放进度条，与主题呼应 */
+.scroll-progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 250;
+  background: transparent;
+  pointer-events: none;
+}
+.scroll-progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transform-origin: left;
+  transition: width .1s linear;
+}
+
+/* ---------- 刊头 ---------- */
+.masthead {
+  padding: 5rem 0 3rem;
+  border-top: 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+/* 胶片颗粒纹理：仅亮色模式，3% 透明度，致敬胶片质感，作刊头视觉锚点 */
+body:not(.dark) .masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.masthead .container { position: relative; z-index: 1; }
+.masthead-title {
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  margin: 0;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+.masthead-title:hover { opacity: 0.82; }
+.masthead-title:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.3em; }
+.masthead-title .accent { font-style: italic; }
+.masthead-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.8rem 0 1.6rem;
+  font-size: 1.05rem;
+}
+/* Vol./期数行：坐落于一根发丝线两端，如杂志封面"期号·定价" */
+.masthead-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 2.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.8rem;
+  margin-top: 1.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.masthead-meta span b { color: var(--ink); font-weight: 600; }
+/* 胶片片孔条：金色等距方孔，替代通用 ❖ 菱形，致敬胶片穿孔 */
+.masthead-ornament {
+  margin: 2rem auto 0;
+  width: 200px;
+  height: 10px;
+  background: repeating-linear-gradient(90deg, var(--gold) 0 7px, transparent 7px 14px);
+}
+
+/* ---------- 卷首语 ---------- */
+.editor-note .lead {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: 1.85;
+  color: var(--ink);
+  max-width: 760px;
+  margin: 0;
+}
+.editor-note .lead::first-letter {
+  font-size: 3.6em;
+  float: left;
+  line-height: 0.85;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.editor-note-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule-fine);
+}
+.editor-note-grid p { margin: 0; font-size: 0.95rem; }
+.editor-note-grid .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* ---------- 数据仪表 ---------- */
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-top: 2rem;
+}
+.numbers-grid .cell {
+  text-align: center;
+  padding: 1.6rem 0.8rem;
+  border-left: 1px solid var(--rule-fine);
+}
+.numbers-grid .cell:first-child { border-left: 0; }
+.numbers-grid .num {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+.numbers-grid .num .unit {
+  font-size: 0.4em;
+  color: var(--ink-faint);
+  font-weight: 400;
+  margin-left: 0.2em;
+}
+.numbers-grid .label {
+  margin-top: 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------- 区块标题 ---------- */
+.section-head { margin-bottom: 2.5rem; }
+.section-head h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  margin: 0 0 0.4rem;
+}
+.section-head .desc {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ---------- 图表通用 ---------- */
+.chart-wrap { margin-top: 1.5rem; }
+.chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* 日历按年分行堆叠，保持自然宽度——窄屏横向滚动而非压缩 */
+#sec-calendar .chart-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#sec-calendar .chart-wrap svg {
+  width: 100%;
+  max-width: none;
+  min-width: 720px; /* 保证格子可读：窄于此则滚动 */
+  height: auto;
+}
+.chart-tip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 2px;
+  white-space: nowrap;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity .15s;
+  font-family: var(--sans);
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.chart-tip.show { opacity: 1; }
+
+/* ---------- 日历热力 ---------- */
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-top: 1rem;
+}
+.calendar-legend .swatches { display: flex; gap: 3px; }
+.calendar-legend .sw { width: 12px; height: 12px; border-radius: 2px; }
+
+/* 散点：悬停 expand-bounce 微动效（cubic-bezier 带回弹） */
+#scatterChart circle, #scatterChart rect { transition: r .18s cubic-bezier(.34,1.56,.64,1), transform .18s cubic-bezier(.34,1.56,.64,1); }
+/* 散点图例：说明 ● 一致 / ◆ 独爱宝藏（金）/ ◇ 大众力捧，我独无感 */
+.scatter-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  justify-content: flex-end;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  margin-top: 1rem;
+}
+.scatter-legend .lg { display: inline-flex; align-items: center; gap: 0.4rem; }
+.scatter-legend .mk { display: inline-block; width: 10px; height: 10px; }
+.scatter-legend .mk.acc { border-radius: 50%; background: var(--accent); opacity: 0.5; }
+.scatter-legend .mk.gold { border-radius: 50%; background: var(--gold); opacity: 0.7; }
+.scatter-legend .mk.dia { background: var(--accent); opacity: 0.5; transform: rotate(45deg); }
+
+/* ---------- 散点 ---------- */
+.scatter-note {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+.scatter-note .col h4 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  margin: 0 0 0.8rem;
+}
+.scatter-note .col h4 .kicker { display: block; margin-bottom: 0.2rem; }
+.film-list { list-style: none; margin: 0; padding: 0; }
+.film-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--rule-fine);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color .2s;
+}
+.film-list li:hover { color: var(--accent); }
+.film-list .ft { flex: 1; min-width: 0; }
+.film-list .ft b { font-weight: 600; }
+.film-list .ft .yr { color: var(--ink-faint); font-size: 0.78rem; margin-left: 0.4rem; }
+.film-list .fr { font-family: var(--serif); font-size: 0.82rem; white-space: nowrap; }
+.film-list .fr .mine { color: var(--accent); }
+.film-list .fr .vs { color: var(--ink-faint); margin: 0 0.2rem; }
+
+/* ---------- 片单主体 ---------- */
+.collection-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule-fine);
+  border-bottom: 1px solid var(--rule-fine);
+}
+.control { display: flex; align-items: center; gap: 0.5rem; }
+.control label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.control input {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;          /* 胶囊化，与 chip-trigger 同形 */
+  outline: none;
+  transition: border-color .2s, color .2s;
+}
+.control input::placeholder { color: var(--ink-faint); }
+.control input:focus { border-color: var(--accent); }
+.control input[type="search"] { min-width: 180px; }
+.collection-count {
+  margin-left: auto;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.collection-count b { color: var(--accent); font-weight: 600; }
+
+/* 片单附加按钮 */
+.control-actions { gap: 0.6rem; }
+.ctrl-btn {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0.35rem 0.8rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.ctrl-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* 触发式标签 chip：点击展开下拉，选中填暗红（Notion 数据库筛选风） */
+.chip { position: relative; }
+.chip-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.chip-trigger:hover, .chip.open .chip-trigger { color: var(--accent); border-color: var(--accent); }
+/* 已选中非默认值时，整枚 chip 填暗红，区别于"全部" */
+.chip.has-value .chip-trigger { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+.chip-label { white-space: nowrap; }
+.chip-caret { font-size: 0.7rem; line-height: 1; opacity: 0.7; }
+.chip-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 70;
+  min-width: 160px;
+  max-width: 260px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+.chip-menu[hidden] { display: none; }
+.chip-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.chip-opt:hover { background: var(--paper-tint); }
+.chip-opt.active { background: var(--accent); color: var(--paper); }
+
+/* 搜索自动补全下拉 */
+.control:has(#f-search) { position: relative; }
+.suggest {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 60;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  min-width: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.suggest li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--rule-fine);
+}
+.suggest li:last-child { border-bottom: 0; }
+.suggest li:hover { background: var(--paper-tint); }
+.suggest li.active { background: var(--paper-tint); }
+.suggest .s-title { font-family: var(--serif); }
+.suggest .s-meta { color: var(--ink-faint); font-size: 0.72rem; white-space: nowrap; }
+
+/* 灯箱内可点击的导演名 */
+.fact-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.fact-link:hover { color: var(--accent-soft); }
+
+/* 分卷：按私人评分拆成若干卷，默认各展示代表若干张，可展开 */
+.collection-volumes {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.volume {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.6rem;
+}
+.volume:first-child { border-top: 0; padding-top: 0; }
+.volume-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1.5rem;
+  margin-bottom: 1.4rem;
+}
+.volume-title { display: flex; align-items: baseline; gap: 0.7rem; }
+.volume-title h3 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.1;
+}
+.volume-stars {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+.volume-stars.none { color: var(--ink-faint); letter-spacing: 0; }
+.volume-en {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+.volume-meta { display: flex; align-items: center; gap: 1.2rem; }
+.volume-count {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.volume-toggle {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 0.35rem 0.9rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.volume-toggle:hover { background: var(--accent); color: var(--paper); }
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2rem 1.6rem;
+}
+.empty-state {
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--ink-faint);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+}
+.poster-card {
+  cursor: pointer;
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  transition: transform .25s ease;
+}
+.poster-card:hover { transform: translateY(-4px); }
+.poster-frame {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  background: var(--paper-tint);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow .25s ease;
+}
+.poster-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter .3s;
+}
+.poster-card:hover .poster-frame { box-shadow: var(--card-shadow-hover); }
+.poster-card:hover .poster-frame img { filter: brightness(.92); }
+.poster-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--paper-tint), var(--rule-fine));
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-align: center;
+  padding: 1rem;
+}
+.poster-rating {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: var(--badge-bg);
+  color: var(--accent);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.4rem;
+  line-height: 1;
+}
+.poster-meta { padding-top: 0.6rem; }
+.poster-title {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.poster-sub {
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  margin-top: 0.2rem;
+  letter-spacing: 0.03em;
+}
+
+/* 灯箱 */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  background: color-mix(in srgb, #000 70%, transparent);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox.open { display: flex; }
+.lightbox-card {
+  background: var(--paper);
+  max-width: 880px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+}
+.lightbox-poster {
+  aspect-ratio: 2/3;
+  background: var(--paper-tint);
+  overflow: hidden;
+}
+.lightbox-poster img { width: 100%; height: 100%; object-fit: cover; }
+.lightbox-body { padding: 1.8rem 2rem; box-shadow: var(--seam-shadow); }
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.4rem;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 210;
+  transition: background .2s, color .2s;
+}
+.lightbox-close:hover { background: var(--gold); color: var(--paper); }
+.lightbox-body h3 {
+  font-size: 1.6rem;
+  margin: 0 0 0.2rem;
+  line-height: 1.25;
+}
+.lightbox-body .alt { font-family: var(--serif); font-style: italic; color: var(--ink-faint); font-size: 0.9rem; margin: 0 0 1rem; }
+.lightbox-ratings {
+  display: flex;
+  gap: 1.5rem;
+  margin: 1rem 0 1.2rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--rule-fine);
+  border-bottom: 1px solid var(--rule-fine);
+}
+.lightbox-ratings .blk .label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); display: block; }
+.lightbox-ratings .blk .val { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; }
+.lightbox-ratings .blk.my .val { color: var(--accent); }
+.lightbox-comment {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink);
+  border-left: 3px solid var(--accent);
+  padding-left: 1.6rem;
+  margin: 1.2rem 0;
+}
+.lightbox-comment .kicker { color: var(--accent); margin-bottom: 0.3rem; }
+.lightbox-facts { font-size: 0.88rem; line-height: 1.9; color: var(--ink-soft); }
+.lightbox-facts .row { display: flex; gap: 0.6rem; }
+.lightbox-facts .row .k { color: var(--ink-faint); min-width: 4em; flex-shrink: 0; }
+.lightbox-link {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
+}
+
+/* ---------- 横向条形（类型光谱） ---------- */
+.bar-list { margin-top: 1.5rem; }
+.bar-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr 4rem;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+.bar-row .name { font-family: var(--serif); font-size: 0.95rem; }
+.bar-track { height: 14px; background: var(--rule-fine); position: relative; }
+.bar-fill { height: 100%; background: var(--accent); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+.bar-row .count { font-size: 0.82rem; color: var(--ink-faint); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- 双栏排名 ---------- */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 1.5rem; }
+.two-col h4 { font-family: var(--serif); font-size: 1.2rem; margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--rule); }
+.rank-list { list-style: none; margin: 0; padding: 0; }
+.rank-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule-fine);
+}
+.rank-list .num { font-family: var(--serif); color: var(--accent); font-weight: 700; width: 1.5em; font-size: 0.9rem; }
+.rank-list .nm { flex: 1; font-size: 0.92rem; }
+.rank-list .meta { font-size: 0.78rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+/* ---------- 年度切换 ---------- */
+.year-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--rule); }
+.year-tab {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.5rem 1.2rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: -1px;
+}
+.year-tab:hover { color: var(--ink); }
+.year-tab.active { color: var(--accent); border-color: var(--accent); }
+.year-panel { display: none; }
+.year-panel.active { display: grid; }
+.year-panel { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+.year-stat .num { font-family: var(--serif); font-size: 2.2rem; font-weight: 700; line-height: 1; }
+.year-stat.best .num {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.year-stat .label { font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
+.year-highlights { grid-column: 1 / -1; margin-top: 1rem; }
+.year-highlights h5 { font-family: var(--serif); font-size: 1rem; margin: 0 0 0.8rem; }
+.year-highlights .hl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+
+/* ---------- 版权页 ---------- */
+.colophon { text-align: center; padding: 4rem 0; }
+.colophon .orn { margin: 0 auto 1.5rem; }
+.colophon .orn.film-strip {
+  width: 120px;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--gold) 0 7px, transparent 7px 14px);
+}
+.colophon p { font-family: var(--serif); font-style: italic; color: var(--ink-soft); margin: 0.4rem 0; font-size: 0.95rem; }
+.colophon .stamp { font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-faint); margin-top: 1.5rem; }
+
+/* ---------- 滚动揭示 ---------- */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 760px) {
+  .container { padding: 0 1.2rem; }
+  section { padding: 3.5rem 0; }
+  .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+  .numbers-grid .cell { border-left: 0; border-bottom: 1px solid var(--rule-fine); }
+  .editor-note-grid, .scatter-note, .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+  .year-panel { grid-template-columns: 1fr 1fr; }
+  /* 移动端灯箱：海报固定顶部条带，详情占主体，避免海报占满屏宽 */
+  .lightbox { padding: 0; align-items: stretch; }
+  .lightbox-card { grid-template-columns: 1fr; max-width: 100%; max-height: 100vh; }
+  .lightbox-poster { aspect-ratio: 16/9; max-height: 200px; }
+  .lightbox-body { padding: 1.2rem 1.2rem 2rem; }
+  /* 移动端导航：汉堡菜单 + 折叠下拉 */
+  .nav-toggle { display: inline-block; }
+  #topNav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .25s ease;
+  }
+  #topNav.open { max-height: 70vh; overflow-y: auto; }
+  #topNav .toc { flex-direction: column; gap: 0; padding: 0.5rem 1.2rem 1rem; }
+  #topNav .toc li { padding: 0.4rem 0; border-bottom: 1px solid var(--rule-fine); }
+  #topNav .toc li:last-child { border-bottom: 0; }
+  .topbar-inner { padding: 0.6rem 1.2rem; position: relative; }
+  .topbar-left { display: flex; align-items: center; gap: 0.8rem; }
+  /* 日历滑动提示：仅移动端显示 */
+  .scroll-hint { display: block; }
+  /* 刊头 Vol./期数行：窄屏挤回居中，避免两端对齐时被挤换行 */
+  .masthead-meta { justify-content: center; gap: 0.4rem 1.5rem; }
+  /* 海报移动端两列大卡 */
+  .poster-grid { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  /* 控件换行更自然 */
+  .collection-controls { gap: 0.7rem 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
