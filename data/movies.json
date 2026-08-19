@@ -1,8 +1,8 @@
 {
   "meta": {
     "user_id": "62818720",
-    "total_seen": 1806,
-    "last_crawl_at": "2026-08-14T03:48:27.874Z",
+    "total_seen": 1808,
+    "last_crawl_at": "2026-08-19T02:03:31.807Z",
     "crawl_mode": "incremental"
   },
   "movies": [
@@ -119697,6 +119697,62 @@
       "my_comment": "喜剧 tag 谁打的啊",
       "my_comment_useful": null,
       "poster": "posters/1295629.jpg",
+      "detail": {
+        "title": "302 Found",
+        "year": null,
+        "douban_rating": null,
+        "rating_count": null,
+        "directors": [],
+        "writers": [],
+        "actors": [],
+        "genres": [],
+        "countries": [],
+        "languages": [],
+        "release_dates": [],
+        "runtime": null,
+        "aka": [],
+        "imdb": null
+      }
+    },
+    {
+      "subject_id": "1303545",
+      "title": "怪宴",
+      "alt_title": "Murder by Death",
+      "url": "https://movie.douban.com/subject/1303545/",
+      "poster_url": "https://img1.doubanio.com/view/photo/s_ratio_poster/public/p809915309.webp",
+      "my_rating": 3,
+      "my_date": "2026-08-18",
+      "my_comment": "赖皮了属于是",
+      "my_comment_useful": null,
+      "poster": "posters/1303545.jpg",
+      "detail": {
+        "title": "302 Found",
+        "year": null,
+        "douban_rating": null,
+        "rating_count": null,
+        "directors": [],
+        "writers": [],
+        "actors": [],
+        "genres": [],
+        "countries": [],
+        "languages": [],
+        "release_dates": [],
+        "runtime": null,
+        "aka": [],
+        "imdb": null
+      }
+    },
+    {
+      "subject_id": "4706601",
+      "title": "雾都疑案",
+      "alt_title": "23 Paces To Baker Street",
+      "url": "https://movie.douban.com/subject/4706601/",
+      "poster_url": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2554215942.webp",
+      "my_rating": 4,
+      "my_date": "2026-08-18",
+      "my_comment": "怪不得用这么贵的香水😱",
+      "my_comment_useful": null,
+      "poster": "posters/4706601.jpg",
       "detail": {
         "title": "302 Found",
         "year": null,
